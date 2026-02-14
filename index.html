@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>بديع & دانية | 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&family=Amiri:ital@1&display=swap" rel="stylesheet">
+    <style>
+        :root { --accent: #ff4b5c; }
+
+        html, body {
+            margin: 0; padding: 0; height: 100%;
+            scroll-snap-type: y mandatory;
+            overflow-y: scroll;
+            overflow-x: hidden;
+            font-family: 'Tajawal', sans-serif;
+            /* الصورة مفرودة على كامل الشاشة تماماً */
+            background: url('https://i.postimg.cc/cHpCrkW3/IMG-5986.jpg') no-repeat center center fixed;
+            background-size: cover; 
+        }
+
+        /* شاشة القفل شفافة ببلور فقط */
+        #lock-screen {
+            position: fixed; inset: 0; 
+            backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            display: flex; justify-content: center; align-items: center; text-align: center; z-index: 10000;
+        }
+        .lock-box { 
+            background: rgba(255, 255, 255, 0.2); padding: 30px; border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.4); width: 85%; max-width: 320px; color: #fff;
+        }
+
+        .page {
+            height: 100vh; width: 100vw;
+            scroll-snap-align: start;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            padding: 20px; text-align: center; box-sizing: border-box;
+            color: #fff;
+        }
+
+        /* الكروت الشفافة (Glass) تظهر الصورة خلفها */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3); border-radius: 30px; 
+            padding: 25px; width: 90%; max-width: 400px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .counter-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin: 20px 0; }
+        .box { background: rgba(255, 75, 92, 0.6); padding: 15px; border-radius: 15px; }
+        .box-num { display: block; font-size: 1.5rem; font-weight: bold; }
+
+        .gallery-container { 
+            max-height: 65vh; overflow-y: auto; width: 100%; max-width: 800px; padding: 10px;
+        }
+        .gallery { column-count: 2; column-gap: 15px; }
+        .gallery img { width: 100%; border-radius: 15px; margin-bottom: 15px; border: 2px solid white; }
+
+        .nav-btn { background: var(--accent); color: white; border: none; padding: 12px 30px; border-radius: 50px; cursor: pointer; font-weight: bold; }
+
+        #modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 11000; justify-content: center; align-items: center; }
+        #modal img { max-width: 90%; max-height: 80%; border-radius: 10px; }
+
+        #music-control { position: fixed; bottom: 20px; left: 20px; background: var(--accent); width: 45px; height: 45px; border-radius: 50%; display: flex; justify-content: center; align-items: center; z-index: 999; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+<div id="lock-screen">
+    <div class="lock-box">
+        <h2 style="color:#fff">لأجمل دانية ❤️</h2>
+        <p>اكتبي تاريخ اليوم (3-1)</p>
+        <input type="password" id="passInput" style="width:85%; padding:12px; margin-bottom:15px; border-radius:10px; border:none; text-align:center;">
+        <button onclick="checkPass()" class="nav-btn">افتحي يا بطتي ✨</button>
+    </div>
+</div>
+
+<div id="modal" onclick="this.style.display='none'"><img id="modalImg"></div>
+<div id="music-control" onclick="toggleMusic()">🎵</div>
+<audio id="bgMusic" loop><source src="https://serv100.albumaty.com/2025/Albumaty.Com_adm_ya_hlw.mp3" type="audio/mpeg"></audio>
+
+<div id="main-content" style="display:none;">
+    <section class="page">
+        <div class="glass-card">
+            <h1 style="color: #fff;">نورتي يا بطتي دانية ❤️</h1>
+            <p>اسحبي لفوق عشان تشوفي المفاجأة..</p>
+        </div>
+    </section>
+
+    <section class="page">
+        <div class="glass-card">
+            <h2>أجمل يوم في حياتي:</h2>
+            <p style="font-weight: bold; font-size: 1.2rem;">30 أبريل 2021</p>
+            <div class="counter-grid">
+                <div class="box"><span id="days" class="box-num">0</span>يوم</div>
+                <div class="box"><span id="hours" class="box-num">0</span>ساعة</div>
+                <div class="box"><span id="mins" class="box-num">0</span>دقيقة</div>
+                <div class="box"><span id="secs" class="box-num">0</span>ثانية</div>
+            </div>
+        </div>
+    </section>
+
+    <section class="page">
+        <h2 style="text-shadow: 2px 2px 10px rgba(0,0,0,0.3);">أحلى صور لفرولتي 📸</h2>
+        <div class="gallery-container">
+            <div class="gallery" id="photoContainer"></div>
+        </div>
+    </section>
+
+    <section class="page">
+        <div class="glass-card" style="font-family:'Amiri', serif; font-size:1.4rem;">
+            دانية (فرولتي).. <br>
+            كل سنة وأنتِ طيبة يا فرولتي . <br>
+            من 2021 ولحد النهاردة وأنتِ أغلى ما عندي. <br>
+            هابي فلانتين يا بطتي. ❤️
+            <br><br>
+            <b>بديع</b>
+        </div>
+    </section>
+</div>
+
+<script>
+    const MY_PASS = "3-1";
+    const START_DATE = new Date("2021-04-30T00:00:00");
+    const images = [
+        "https://i.postimg.cc/mr7rzNdr/IMG-0358.jpg", "https://i.postimg.cc/6QCQ2LHp/IMG-0649.jpg",
+        "https://i.postimg.cc/LsjsYBy5/IMG-1261.jpg", "https://i.postimg.cc/cJfJgMDH/IMG-2214.jpg",
+        "https://i.postimg.cc/J7pzkhQX/img-250810194338996.jpg", "https://i.postimg.cc/rp5p0Ch0/IMG-2546.jpg",
+        "https://i.postimg.cc/hGVGzbCV/IMG-3186.png", "https://i.postimg.cc/Pq1qpz6Q/IMG-3275.png",
+        "https://i.postimg.cc/N0R097Nm/IMG-3687.jpg", "https://i.postimg.cc/mr7rzNd3/IMG-4175.jpg",
+        "https://i.postimg.cc/cHpCrkW3/IMG-5986.jpg", "https://i.postimg.cc/TwG3rLSL/IMG-5049.webp",
+        "https://i.postimg.cc/MTxpyM4Q/IMG-6223.jpg", "https://i.postimg.cc/MTxpyM4j/IMG-7070.jpg",
+        "https://i.postimg.cc/ZRZ5rBgr/IMG-7084.jpg", "https://i.postimg.cc/cHZLQgjR/IMG-7169.jpg",
+        "https://i.postimg.cc/7htP8B6q/IMG-7998.avif", "https://i.postimg.cc/hvZ4WCGC/IMG-8233.avif",
+        "https://i.postimg.cc/T1N2MkPH/IMG-8235.avif", "https://i.postimg.cc/HnvWDSxg/IMG-8237.avif",
+        "https://i.postimg.cc/7YcPKQdY/IMG-8240.avif", "https://i.postimg.cc/zv2DZdBY/IMG-8639.jpg",
+        "https://i.postimg.cc/j23q085K/IMG-8647-(2).jpg", "https://i.postimg.cc/tRB4xgz1/IMG-9481.jpg"
+    ];
+
+    function checkPass() {
+        if(document.getElementById('passInput').value === MY_PASS) {
+            document.getElementById('lock-screen').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            loadGallery(); startTimer();
+            document.getElementById('bgMusic').play().catch(() => {});
+        } else { alert("ركزي يا بطتي 😉"); }
+    }
+
+    function loadGallery() {
+        const container = document.getElementById('photoContainer');
+        if(container.innerHTML !== "") return;
+        images.forEach(url => {
+            const img = document.createElement('img');
+            img.src = url;
+            img.onclick = () => { 
+                document.getElementById('modalImg').src = url; 
+                document.getElementById('modal').style.display = 'flex'; 
+            };
+            container.appendChild(img);
+        });
+    }
+
+    function startTimer() {
+        setInterval(() => {
+            const diff = new Date() - START_DATE;
+            document.getElementById('days').innerText = Math.floor(diff / 86400000);
+            document.getElementById('hours').innerText = Math.floor((diff / 3600000) % 24);
+            document.getElementById('mins').innerText = Math.floor((diff / 60000) % 60);
+            document.getElementById('secs').innerText = Math.floor((diff / 1000) % 60);
+        }, 1000);
+    }
+
+    function toggleMusic() {
+        const m = document.getElementById('bgMusic');
+        m.paused ? m.play() : m.pause();
+    }
+</script>
+</body>
+</html>
